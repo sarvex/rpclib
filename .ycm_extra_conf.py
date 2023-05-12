@@ -67,7 +67,7 @@ def IsHeaderFile(filename):
 def GetCompilationInfoForFile(filename):
     if IsHeaderFile(filename):
         basename = os.path.splitext(filename)[0].replace('include', 'lib')
-        replacement_file = basename + '.cc'
+        replacement_file = f'{basename}.cc'
         if os.path.exists(replacement_file):
             compilation_info = database.GetCompilationInfoForFile(
                 replacement_file)
@@ -80,12 +80,12 @@ def GetCompilationInfoForFile(filename):
 def FlagsForFile(filename, **kwargs):
     global flags
     if database:
-        compilation_info = GetCompilationInfoForFile(filename)
-        if not compilation_info:
+        if compilation_info := GetCompilationInfoForFile(filename):
+            final_flags = MakeRelativePathsInFlagsAbsolute(
+                compilation_info.compiler_flags_,
+                compilation_info.compiler_working_dir_)
+        else:
             return None
-        final_flags = MakeRelativePathsInFlagsAbsolute(
-            compilation_info.compiler_flags_,
-            compilation_info.compiler_working_dir_)
     else:
         relative_to = current_path()
         final_flags = MakeRelativePathsInFlagsAbsolute(flags, relative_to)

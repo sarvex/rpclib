@@ -10,7 +10,7 @@ import re
 files = []
 types = ['.cpp', '.cc', '.h', '.hpp', '.hh', '.ipp', '.inl']
 for t in types:
-    files.extend(glob2.glob('include/**/*' + t))
+    files.extend(glob2.glob(f'include/**/*{t}'))
 
 for f in files:
     print('Processing', f)
